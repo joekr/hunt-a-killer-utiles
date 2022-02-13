@@ -11,6 +11,9 @@ import (
 
 var sliceArray []int32
 
+var BuildDate string
+var Version string
+
 func shift(r rune, shift int) rune {
 	// Shift character by specified number of places.
 	// ... If beyond range, shift backward or forward.
@@ -26,6 +29,16 @@ func shift(r rune, shift int) rune {
 }
 
 func main() {
+	var cmdVersion = &cobra.Command{
+		Use:   "version [show the version]",
+		Short: "returns the cli's version",
+		Args:  cobra.MinimumNArgs(0),
+		Run: func(cmd *cobra.Command, args []string) {
+			fmt.Println("Version: ", Version)
+			fmt.Println("BuildDate: ", BuildDate)
+		},
+	}
+
 	var cmdDecrypt = &cobra.Command{
 		Use:   "decrypt [string to decypt]",
 		Short: "decrypt a given string",
@@ -76,6 +89,7 @@ func main() {
 
 	var rootCmd = &cobra.Command{Use: "app"}
 	rootCmd.AddCommand(cmdDecrypt)
+	rootCmd.AddCommand(cmdVersion)
 	cmdDecrypt.AddCommand(cmdRepeat)
 	cmdDecrypt.PersistentFlags().Int32P("shift", "s", 1, "Value to shift the given input by")
 	// TODO: fix nil as default
